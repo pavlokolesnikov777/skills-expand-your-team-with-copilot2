@@ -323,28 +323,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  async function copyTextToClipboard(text) {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-      return;
-    }
-
-    const fallbackTextArea = document.createElement("textarea");
-    fallbackTextArea.value = text;
-    fallbackTextArea.setAttribute("readonly", "");
-    fallbackTextArea.style.position = "absolute";
-    fallbackTextArea.style.left = "-9999px";
-    document.body.appendChild(fallbackTextArea);
-    fallbackTextArea.select();
-    document.execCommand("copy");
-    document.body.removeChild(fallbackTextArea);
-  }
-
   async function handleCopyShareLink(activityName, details, successMessage) {
     const shareDetails = buildActivityShareDetails(activityName, details);
 
     try {
-      await copyTextToClipboard(shareDetails.url);
+      if (!navigator.clipboard?.writeText) {
+        window.prompt("Copy this share link:", shareDetails.url);
+        showMessage("Share link ready to copy.", "info");
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareDetails.url);
       showMessage(successMessage || "Share link copied to your clipboard.", "success");
     } catch (error) {
       console.error("Error copying share link:", error);
@@ -385,8 +374,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const sharedCard = document.querySelector(
-      `[data-activity-card="${encodeURIComponent(sharedActivityName)}"]`
+    const sharedCard = Array.from(document.querySelectorAll(".activity-card")).find(
+      (card) => card.dataset.activityCard === sharedActivityName
     );
 
     if (!sharedCard) {
@@ -573,7 +562,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
     activityCard.className = "activity-card";
-    activityCard.dataset.activityCard = encodeURIComponent(name);
+    activityCard.dataset.activityCard = name;
 
     // Calculate spots and capacity
     const totalSpots = details.max_participants;
