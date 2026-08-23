@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Authentication state
   let currentUser = null;
-  const themeStorageKey = "preferredTheme";
+  const themeStorageKey = window.themeStorageKey || "preferredTheme";
 
   // Time range mappings for the dropdown
   const timeRanges = {
@@ -62,9 +62,11 @@ document.addEventListener("DOMContentLoaded", () => {
     themeToggleText.textContent = isDarkMode ? "Light mode" : "Dark mode";
   }
 
-  function applyTheme(theme) {
+  function applyTheme(theme, persist = false) {
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem(themeStorageKey, theme);
+    if (persist) {
+      localStorage.setItem(themeStorageKey, theme);
+    }
     updateThemeToggle(theme);
   }
 
@@ -81,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute("data-theme");
-    applyTheme(currentTheme === "dark" ? "light" : "dark");
+    applyTheme(currentTheme === "dark" ? "light" : "dark", true);
   }
 
   // Initialize filters from active elements
