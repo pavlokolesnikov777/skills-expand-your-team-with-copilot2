@@ -1,5 +1,6 @@
 /* Color palette */
 :root {
+  color-scheme: light;
   /* Primary colors */
   --primary: #1a237e;
   --primary-light: #534bae;
@@ -32,6 +33,33 @@
   --info-light: #d1ecf1;
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --primary: #8ea2ff;
+  --primary-light: #b7c2ff;
+  --primary-dark: #5f78ff;
+  --primary-text: #0f172a;
+  --secondary: #ffb74d;
+  --secondary-light: #ffd180;
+  --secondary-dark: #f57c00;
+  --secondary-text: #1f2937;
+  --background: #111827;
+  --surface: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --border: #374151;
+  --border-light: #4b5563;
+  --border-focus: #93c5fd;
+  --success: #4ade80;
+  --success-light: #14532d;
+  --warning: #fbbf24;
+  --warning-light: #78350f;
+  --error: #f87171;
+  --error-light: #7f1d1d;
+  --info: #67e8f9;
+  --info-light: #164e63;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -48,6 +76,20 @@ body {
   padding: 12px;
   background-color: var(--background);
   font-size: 0.9rem;
+}
+
+body,
+section,
+.sidebar-filters,
+.activity-card,
+.skeleton-card,
+.modal-content,
+.no-results,
+.search-box input {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 header {
@@ -488,6 +530,8 @@ footer {
   min-width: 0; /* Add this to prevent input from overflowing */
   padding: 6px 10px;
   border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-primary);
   border-right: none;
   border-radius: 20px 0 0 20px;
   font-size: 0.85rem;
@@ -617,11 +661,19 @@ footer {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #user-status {
   display: flex;
   align-items: center;
+}
+
+#theme-toggle-button {
+  min-width: 118px;
+  justify-content: center;
 }
 
 #user-info {
