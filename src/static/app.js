@@ -325,11 +325,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function handleCopyShareLink(activityName, details, successMessage) {
     const shareDetails = buildActivityShareDetails(activityName, details);
+    const showManualCopyPrompt = () => {
+      window.prompt("Copy this share link:", shareDetails.url);
+      showMessage("Share link ready to copy.", "info");
+    };
 
     try {
       if (!navigator.clipboard?.writeText) {
-        window.prompt("Copy this share link:", shareDetails.url);
-        showMessage("Share link ready to copy.", "info");
+        showManualCopyPrompt();
         return;
       }
 
@@ -337,7 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showMessage(successMessage || "Share link copied to your clipboard.", "success");
     } catch (error) {
       console.error("Error copying share link:", error);
-      showMessage("Couldn't copy the share link. Please try again.", "error");
+      showManualCopyPrompt();
     }
   }
 
@@ -347,7 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (navigator.share) {
       try {
         await navigator.share(shareDetails);
-        showMessage("Share options opened for this activity.", "success");
         return;
       } catch (error) {
         if (error.name === "AbortError") {
