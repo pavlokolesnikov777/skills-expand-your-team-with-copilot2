@@ -17,6 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const difficultyFilters = document.querySelectorAll(".difficulty-filter");
 
   // Authentication elements
+  const themeToggleButton = document.getElementById("theme-toggle-button");
+  const themeToggleIcon = document.getElementById("theme-toggle-icon");
+  const themeToggleText = document.getElementById("theme-toggle-text");
   const loginButton = document.getElementById("login-button");
   const userInfo = document.getElementById("user-info");
   const displayName = document.getElementById("display-name");
@@ -49,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Authentication state
   let currentUser = null;
+  const themeStorageKey = window.themeStorageKey || "preferredTheme";
 
   // Time range mappings for the dropdown
   const timeRanges = {
@@ -56,6 +60,37 @@ document.addEventListener("DOMContentLoaded", () => {
     afternoon: { start: "15:00", end: "18:00" }, // After school hours
     weekend: { days: ["Saturday", "Sunday"] }, // Weekend days
   };
+
+  function updateThemeToggle(theme) {
+    const isDarkMode = theme === "dark";
+    themeToggleButton.setAttribute("aria-pressed", isDarkMode.toString());
+    themeToggleIcon.textContent = isDarkMode ? "☀️" : "🌙";
+    themeToggleText.textContent = isDarkMode ? "Light mode" : "Dark mode";
+  }
+
+  function applyTheme(theme, persist = false) {
+    document.documentElement.setAttribute("data-theme", theme);
+    if (persist) {
+      localStorage.setItem(themeStorageKey, theme);
+    }
+    updateThemeToggle(theme);
+  }
+
+  function getPreferredTheme() {
+    const savedTheme = localStorage.getItem(themeStorageKey);
+    if (savedTheme === "dark" || savedTheme === "light") {
+      return savedTheme;
+    }
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    applyTheme(currentTheme === "dark" ? "light" : "dark", true);
+  }
 
   // Initialize filters from active elements
   function initializeFilters() {
@@ -255,6 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Event listeners for authentication
+  themeToggleButton.addEventListener("click", toggleTheme);
   loginButton.addEventListener("click", openLoginModal);
   logoutButton.addEventListener("click", logout);
   closeLoginModal.addEventListener("click", closeLoginModalHandler);
@@ -1004,6 +1040,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Initialize app
+  applyTheme(getPreferredTheme());
   checkAuthentication();
   initializeFilters();
   fetchActivities();

@@ -1,9 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mergington High School Activities</title>
+    <script>
+      try {
+        window.themeStorageKey = "preferredTheme";
+        const savedTheme = localStorage.getItem(window.themeStorageKey);
+        const validSavedTheme =
+          savedTheme === "dark" || savedTheme === "light" ? savedTheme : null;
+        const theme =
+          validSavedTheme ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (error) {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    </script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -11,6 +27,10 @@
       <h1>Mergington High School</h1>
       <h2>Extracurricular Activities</h2>
       <div id="user-controls">
+        <button id="theme-toggle-button" class="icon-button" type="button">
+          <span id="theme-toggle-icon" aria-hidden="true">🌙</span>
+          <span id="theme-toggle-text">Dark mode</span>
+        </button>
         <div id="user-status">
           <button id="login-button" class="icon-button">
             <span class="user-icon">👤</span>
